@@ -108,10 +108,10 @@ const baseHandler = createMcpHandler(
   }
 );
 
-// Force Accept header exactly without whitespace for strict parsers
+// Force Accept header exactly to satisfy mcp-handler
 const handler = async (request: Request) => {
   const headers = new Headers(request.headers);
-  const acceptValue = "application/json,text/event-stream";
+  const acceptValue = "application/json, text/event-stream";
   headers.set("accept", acceptValue);
 
   // Ensure getter returns patched value
