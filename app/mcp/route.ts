@@ -113,6 +113,8 @@ const handler = async (request: Request) => {
   const headers = new Headers(request.headers);
   const acceptValue = "application/json,text/event-stream";
   headers.set("accept", acceptValue);
+
+  // Ensure both getter and property-style access work
   const originalGet = headers.get.bind(headers);
   (headers as any).get = (name: string) => {
     if (typeof name === "string" && name.toLowerCase() === "accept") {
@@ -120,7 +122,14 @@ const handler = async (request: Request) => {
     }
     return originalGet(name);
   };
+  (headers as any).accept = acceptValue;
+
+  // Patch the incoming request object too, in case the handler reads headers directly
+  (request as any).headers = headers as any;
+
   console.log("Incoming Accept after patch:", headers.get("accept"));
+
+  // Rebuild the request with patched headers
   const patchedRequest = new Request(request, { headers });
   return baseHandler(patchedRequest as any);
 };
