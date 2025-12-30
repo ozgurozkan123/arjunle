@@ -93,12 +93,13 @@ const handler = createMcpHandler(
   {
     capabilities: {
       tools: {
+        listChanged: true,
         "do-arjun": {
           description: "Run Arjun to discover hidden HTTP parameters",
         },
       },
     },
-  },
+  } as any,
   {
     basePath: "",
     verboseLogs: true,
