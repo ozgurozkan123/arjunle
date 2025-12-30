@@ -30,7 +30,7 @@ const runArjun = (args: string[]) => {
   });
 };
 
-const handler = createMcpHandler(
+const baseHandler = createMcpHandler(
   async (server) => {
     server.tool(
       "do-arjun",
@@ -107,5 +107,15 @@ const handler = createMcpHandler(
     disableSse: true,
   }
 );
+
+const handler = async (request: Request) => {
+  const headers = new Headers(request.headers);
+  const accept = headers.get("accept") ?? "";
+  if (!accept.includes("application/json") || !accept.includes("text/event-stream")) {
+    headers.set("accept", "application/json, text/event-stream");
+  }
+  const patchedRequest = new Request(request, { headers });
+  return baseHandler(patchedRequest as any);
+};
 
 export { handler as GET, handler as POST, handler as DELETE };
