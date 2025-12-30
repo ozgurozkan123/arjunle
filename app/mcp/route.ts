@@ -108,12 +108,10 @@ const baseHandler = createMcpHandler(
   }
 );
 
+// Force Accept header to satisfy mcp-handler requirement
 const handler = async (request: Request) => {
   const headers = new Headers(request.headers);
-  const accept = headers.get("accept") ?? "";
-  if (!accept.includes("application/json") || !accept.includes("text/event-stream")) {
-    headers.set("accept", "application/json, text/event-stream");
-  }
+  headers.set("accept", "application/json, text/event-stream");
   const patchedRequest = new Request(request, { headers });
   return baseHandler(patchedRequest as any);
 };
