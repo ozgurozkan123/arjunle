@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Install Node dependencies first (better layer caching)
-COPY package.json package-lock.json* ./
+COPY package*.json ./
 RUN npm install --omit=dev
 
 # Copy source
