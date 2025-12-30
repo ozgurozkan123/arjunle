@@ -108,10 +108,18 @@ const baseHandler = createMcpHandler(
   }
 );
 
-// Force Accept header with no whitespace to satisfy strict checks
+// Force Accept header exactly without whitespace for strict parsers
 const handler = async (request: Request) => {
   const headers = new Headers(request.headers);
-  headers.set("accept", "application/json,text/event-stream");
+  const acceptValue = "application/json,text/event-stream";
+  headers.set("accept", acceptValue);
+  const originalGet = headers.get.bind(headers);
+  (headers as any).get = (name: string) => {
+    if (typeof name === "string" && name.toLowerCase() === "accept") {
+      return acceptValue;
+    }
+    return originalGet(name);
+  };
   console.log("Incoming Accept after patch:", headers.get("accept"));
   const patchedRequest = new Request(request, { headers });
   return baseHandler(patchedRequest as any);
