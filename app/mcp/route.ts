@@ -108,10 +108,10 @@ const baseHandler = createMcpHandler(
   }
 );
 
-// Force Accept header to satisfy mcp-handler requirement
+// Force Accept header with no whitespace to satisfy strict checks
 const handler = async (request: Request) => {
   const headers = new Headers(request.headers);
-  headers.set("accept", "application/json, text/event-stream");
+  headers.set("accept", "application/json,text/event-stream");
   console.log("Incoming Accept after patch:", headers.get("accept"));
   const patchedRequest = new Request(request, { headers });
   return baseHandler(patchedRequest as any);
